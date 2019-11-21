@@ -58,7 +58,7 @@ Book.countDocuments().exec(function (err, count) {
                         user: user._id,
                         book: book._id,
                         rating: faker.random.number(5),
-                        text: faker.lorem.sentence(),
+                        text: faker.lorem.paragraph(),
                         created_at: Date.now()
                     })
                     review.save(function(err,newreview) {
