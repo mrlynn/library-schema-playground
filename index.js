@@ -1,5 +1,15 @@
 const inquirer = require('inquirer');
+const chalk = require("chalk");
 const {exec} = require('child_process');
+const boxen = require("boxen");
+
+const boxenOptions = {
+    padding: 1,
+    margin: 1,
+    borderStyle: "round",
+    borderColor: "green",
+    backgroundColor: "#555555"
+};
 
 inquirer
   .prompt([
@@ -23,15 +33,14 @@ inquirer
     .then(countanswer => {
         console.info('Answer:', countanswer.count);
         command = '/usr/local/bin/node data/fake-' + modelanswer.model +'s.js -c ' + countanswer.count;
-        exec(command, (err, out) => {
+        exec(command,{ stdio: ['pipe', 'pipe', 'ignore']}, (err, out) => {
             if (err) {
               console.error(err)
             }
             else {
               console.log(out)
             }
-            console.log("Output: " + out);
-
+            // console.log("Output: " + out);
         })
     })
   });

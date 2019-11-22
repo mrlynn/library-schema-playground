@@ -35,7 +35,7 @@ mongoose.connection.on('error', () => {
     process.exit();
 });
 console.log("Debug: " + process.env.debug); 
-mongoose.set('debug', process.env.debug); //not workig - always true
+mongoose.set('debug', false); //not workig - always true
 
 var done = 0;
 var howMany = `${options.count}`;
