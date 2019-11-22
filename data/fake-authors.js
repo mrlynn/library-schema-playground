@@ -12,6 +12,12 @@ var logger = new (winston.createLogger)({
       new (winston.transports.File)({ filename: 'hackathon.log' })
     ]
 });
+const yargs = require("yargs");
+
+const options = yargs
+ .usage("Usage: fake-authors.js -c <Count of Authors to created>")
+ .option("c", { alias: "count", describe: "Authors to be Created", type: "number", demandOption: true })
+ .argv;
 
 dotenv.config({
     path: '.env'
@@ -19,7 +25,6 @@ dotenv.config({
 
 "use strict";
 
-mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI, { useNewUrlParser: true, useUnifiedTopology: true  });
 mongoose.connection.on('error', () => {
   console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
@@ -28,7 +33,7 @@ mongoose.connection.on('error', () => {
 });
 
 products = [];
-const howMany = 20;
+const howMany = `${options.count}`;
 var done=0;
 
 for (var i=0; i < howMany; i++) {
