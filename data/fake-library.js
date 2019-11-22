@@ -14,7 +14,6 @@ var logger = new (winston.createLogger)({
 });
 
 var faker = require('faker');
-mongoose.Promise = global.Promise;
 
 var Config = require('../config/config');
 const dotenv = require('dotenv');

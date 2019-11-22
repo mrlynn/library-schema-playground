@@ -16,7 +16,7 @@ var logger = new (winston.createLogger)({
       new (winston.transports.File)({ filename: process.env.title + '.log' })
     ]
 });
-onst yargs = require("yargs");
+const yargs = require("yargs");
 
 const options = yargs
  .usage("Usage: fake-reviews.js -c <Count of Reviews to created>")
@@ -36,9 +36,9 @@ mongoose.connection.on('error', () => {
 	logger.log('error', '%s MongoDB connection error. Please make sure MongoDB is running.');
 	process.exit();
 });
+mongoose.set('debug', true);
 
 async function main() {
-
     const howMany = `${options.count}`;
     var done = 0;
     var totalUsers = 0;
@@ -86,7 +86,7 @@ async function main() {
             );
         });
     }
-    if(done>totalUsers) {
+    if(done>=totalUsers) {
         exit();
     }
 }

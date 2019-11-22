@@ -34,15 +34,16 @@ mongoose.connection.on('error', () => {
     logger.log('error', '%s MongoDB connection error. Please make sure MongoDB is running.');
     process.exit();
 });
+console.log("Debug: " + process.env.debug); 
+mongoose.set('debug', process.env.debug); //not workig - always true
 
 var done = 0;
 var howMany = `${options.count}`;
 
 async function main() {
-    console.log('in main with ' + howMany);
     for (var i = 0; i < howMany; i++) {
         var title = faker.lorem.text();
-        Author.count().exec(function (err, count) {
+        Author.countDocuments().exec(function (err, count) {
             // Get a random entry
             var available = Math.floor(Math.random() * 1) ; // get a random availability bool
             var pages = Math.floor(Math.random() * 600) ; // get a random availability bool
