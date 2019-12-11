@@ -5,6 +5,12 @@ var Config = require('../config/config');
 const dotenv = require('dotenv');
 const chalk = require('chalk');
 var winston = require("winston");
+const yargs = require("yargs");
+
+const options = yargs
+ .usage("Usage: fake-users.js -c <Count of Users to created>")
+ .option("c", { alias: "count", describe: "Users to be Created", type: "number", demandOption: true })
+ .argv;
 
 var logger = new (winston.createLogger)({
     transports: [
@@ -26,7 +32,7 @@ mongoose.connection.on('error', () => {
   process.exit();
 });
 
-const maxUsers = 20;
+const maxUsers = `${options.count}`;
 var done=0;
 
 for (var i=0; i < maxUsers; i++) {

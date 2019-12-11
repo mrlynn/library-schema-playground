@@ -43,9 +43,8 @@ async function main() {
     var done = 0;
     var totalUsers = 0;
     for (done=0;done<howMany;done++) {
+        // get a random book
         Book.aggregate([{$sample: {size: 1}}]).exec(function (err,book) {
-            console.log("Selected book: " + book.title);
-
             if (err) {
                 console.log("Error " + err.message);
                 exit();
@@ -54,41 +53,40 @@ async function main() {
                 exit();
             }
             console.log("Making review #" + done);
-            totalUsers = userCount();
-            console.log("Total Users: " + totalUsers);
             // Get a random entry
-            var random = Math.floor(Math.random() * totalUsers)
             // Again query all users but only fetch one offset by our random #
-            User.findOne().skip(random).exec(
-                function (err, user) {
-                    console.log("Selected user: " + user.firstName + ' ' + user.lastName);
+            User.aggregate([{$sample: {size: 1}}]).exec(function (err,user) {
 
+                if (err) {
+                    console.log('error: ' + err.message);
+                    exit();
+                }
+                console.log("Selected user: " + user.firstName + ' ' + user.lastName);
+
+                review = new Review({
+                    user: user._id,
+                    book: book._id,
+                    rating: faker.random.number(5),
+                    text: faker.lorem.paragraph(),
+                    created_at: Date.now()
+                });
+        
+                review.save(function(err,newreview) {
                     if (err) {
-                        console.log('error: ' + err.message);
+                        console.log("Error: " + err.message);
                         exit();
                     }
-                    review = new Review({
-                        user: user._id,
-                        book: book._id,
-                        rating: faker.random.number(5),
-                        text: faker.lorem.paragraph(),
-                        created_at: Date.now()
-                    });
-            
-                    review.save(function(err,newreview) {
-                        if (err) {
-                            console.log("Error: " + err.message);
-                            exit();
-                        }
-                        console.log("New Review" + JSON.stringify(newreview));
-                    });
-                }
+                    console.log("New Review" + JSON.stringify(newreview));
+                });
+            }
             );
+            
         });
+        if(done>=totalUsers) {
+            exit();
+        }
     }
-    if(done>=totalUsers) {
-        exit();
-    }
+    
 }
 function exit() {
     mongoose.disconnect();
@@ -100,6 +98,3 @@ function userCount() {
         return countUsers;
     });
 }
-
-main().catch(console.err);
-
